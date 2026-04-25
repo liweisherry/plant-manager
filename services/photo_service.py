@@ -28,17 +28,23 @@ def _resize_to_jpeg(data: bytes) -> tuple[bytes, int, int]:
 
 
 def _save_local(jpeg_bytes: bytes, filename: str) -> int:
-    dest = UPLOAD_DIR / "plants" / filename
+    dest = UPLOAD_DIR / filename
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(jpeg_bytes)
     return dest.stat().st_size
 
 
+def _cld_config() -> None:
+    from urllib.parse import urlparse
+    import cloudinary
+    p = urlparse(CLOUDINARY_URL)
+    cloudinary.config(cloud_name=p.hostname, api_key=p.username, api_secret=p.password)
+
+
 def _upload_cloudinary(jpeg_bytes: bytes, public_id: str) -> tuple[str, str]:
     """Returns (secure_url, public_id)."""
-    import cloudinary
     import cloudinary.uploader
-    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+    _cld_config()
     result = cloudinary.uploader.upload(
         jpeg_bytes,
         public_id=public_id,
@@ -49,9 +55,8 @@ def _upload_cloudinary(jpeg_bytes: bytes, public_id: str) -> tuple[str, str]:
 
 
 def _delete_cloudinary(cloudinary_id: str) -> None:
-    import cloudinary
     import cloudinary.uploader
-    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+    _cld_config()
     cloudinary.uploader.destroy(cloudinary_id)
 
 
@@ -126,7 +131,7 @@ def delete_photo(db: Session, photo_id: int) -> bool:
         except Exception:
             pass
     else:
-        path = UPLOAD_DIR / "plants" / photo.filename
+        path = UPLOAD_DIR / photo.filename
         if path.exists():
             path.unlink()
     db.delete(photo)

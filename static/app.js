@@ -27,7 +27,7 @@ document.querySelectorAll("form").forEach((form) => {
     const btn = form.querySelector('button[type="submit"]');
     if (!btn) return;
     btn.disabled = true;
-    btn.textContent = "处理中…";
+    btn.textContent = "Processing…";
   });
 });
 
@@ -97,7 +97,7 @@ document.querySelectorAll("form").forEach((form) => {
 
     tipsSection.hidden = false;
     tipsLabel.textContent = name;
-    tipsContent.innerHTML = '<p class="tips-loading">加载中…</p>';
+    tipsContent.innerHTML = '<p class="tips-loading">Loading…</p>';
 
     try {
       const url =
@@ -106,22 +106,22 @@ document.querySelectorAll("form").forEach((form) => {
       const res  = await fetch(url, { headers: geminiHeaders() });
       const data = await res.json();
       if (data.error) {
-        tipsContent.innerHTML = '<p class="tips-error">AI 服务暂不可用</p>';
+        tipsContent.innerHTML = '<p class="tips-error">AI service unavailable</p>';
         return;
       }
       renderTips(data);
     } catch (_) {
-      tipsContent.innerHTML = '<p class="tips-error">获取失败，请稍后再试</p>';
+      tipsContent.innerHTML = '<p class="tips-error">Failed to load, please try again</p>';
     }
   }
 
   const TIPS_LABELS = {
-    water:         { icon: "💧", label: "浇水" },
-    light:         { icon: "☀️",  label: "光照" },
-    temperature:   { icon: "🌡️",  label: "温度" },
-    humidity:      { icon: "💦",  label: "湿度" },
-    fertilize:     { icon: "🌿",  label: "施肥" },
-    common_issues: { icon: "⚠️",  label: "常见问题" },
+    water:         { icon: "💧", label: "Watering" },
+    light:         { icon: "☀️",  label: "Light" },
+    temperature:   { icon: "🌡️",  label: "Temperature" },
+    humidity:      { icon: "💦",  label: "Humidity" },
+    fertilize:     { icon: "🌿",  label: "Fertilising" },
+    common_issues: { icon: "⚠️",  label: "Common Issues" },
   };
 
   function renderTips(data) {

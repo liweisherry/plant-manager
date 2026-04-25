@@ -35,7 +35,7 @@ def _load_image(filename: str) -> Image.Image:
         import urllib.request
         with urllib.request.urlopen(filename) as resp:
             return Image.open(io.BytesIO(resp.read()))
-    path = UPLOAD_DIR / "plants" / filename
+    path = UPLOAD_DIR / filename
     return Image.open(io.BytesIO(path.read_bytes()))
 
 

@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}设置{% endblock %}
+{% block title %}Settings · The Root{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1>设置</h1>
+  <h1>Settings</h1>
 </div>
 
 <div class="form-card" style="max-width:560px;">
   <div class="form-section">
     <h2>Gemini API Key</h2>
     <p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;line-height:1.6;">
-      AI 识别和养护建议功能需要 Gemini API Key。<br>
-      Key 仅保存在你自己的浏览器里，不会上传到服务器。<br>
+      AI identification and care advice require a Gemini API Key.<br>
+      Your key is saved only in your browser and never sent to the server.<br>
       <a href="https://aistudio.google.com/apikey" target="_blank"
-         style="color:var(--green-600);">→ 免费申请 Gemini API Key</a>
+         style="color:var(--green-600);">→ Get a free Gemini API Key</a>
     </p>
 
     <div class="form-group">
@@ -22,15 +22,15 @@
         <input id="gemini-key" type="password" placeholder="AIza..."
                style="flex:1;" autocomplete="off" />
         <button id="toggle-visibility" type="button" class="btn btn-ghost btn-sm"
-                title="显示/隐藏">👁</button>
+                title="Show / hide">👁</button>
       </div>
       <small id="key-status" class="field-hint"></small>
     </div>
 
     <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-      <button id="save-key" class="btn">保存</button>
-      <button id="clear-key" class="btn btn-ghost">清除 Key</button>
-      <button id="test-key" class="btn btn-ghost">测试连接</button>
+      <button id="save-key" class="btn">Save</button>
+      <button id="clear-key" class="btn btn-ghost">Clear Key</button>
+      <button id="test-key" class="btn btn-ghost">Test Connection</button>
     </div>
   </div>
 </div>
@@ -44,11 +44,10 @@
   const testBtn = document.getElementById("test-key");
   const toggle  = document.getElementById("toggle-visibility");
 
-  // 读取已保存的 Key
   const saved = localStorage.getItem("gemini_api_key") || "";
   if (saved) {
     input.value = saved;
-    status.textContent = "✅ 已保存（上次设置）";
+    status.textContent = "✅ Saved";
   }
 
   toggle.addEventListener("click", () => {
@@ -57,31 +56,31 @@
 
   saveBtn.addEventListener("click", () => {
     const key = input.value.trim();
-    if (!key) { status.textContent = "⚠️ 请输入 Key"; return; }
+    if (!key) { status.textContent = "⚠️ Please enter a key"; return; }
     localStorage.setItem("gemini_api_key", key);
-    status.textContent = "✅ 已保存";
+    status.textContent = "✅ Saved";
   });
 
   clearBtn.addEventListener("click", () => {
     localStorage.removeItem("gemini_api_key");
     input.value = "";
-    status.textContent = "🗑 已清除";
+    status.textContent = "🗑 Cleared";
   });
 
   testBtn.addEventListener("click", async () => {
     const key = input.value.trim();
-    if (!key) { status.textContent = "⚠️ 请先输入 Key"; return; }
+    if (!key) { status.textContent = "⚠️ Please enter a key first"; return; }
     testBtn.disabled = true;
-    status.textContent = "测试中…";
+    status.textContent = "Testing…";
     try {
       const res  = await fetch("/api/test-key", {
         method: "POST",
         headers: { "X-Gemini-Key": key, "Content-Type": "application/json" },
       });
       const data = await res.json();
-      status.textContent = data.ok ? "✅ 连接成功！" : "❌ " + data.error;
+      status.textContent = data.ok ? "✅ Connected!" : "❌ " + data.error;
     } catch (_) {
-      status.textContent = "❌ 网络错误";
+      status.textContent = "❌ Network error";
     } finally {
       testBtn.disabled = false;
     }

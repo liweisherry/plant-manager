@@ -1,13 +1,13 @@
 {
-  "name": "The Root Directory",
-  "short_name": "Root Dir",
+  "name": "The Root",
+  "short_name": "The Root",
   "description": "Your personal plant archive — identify, track, and grow.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f5f0e4",
-  "theme_color": "#3a6347",
-  "lang": "zh-CN",
+  "theme_color": "#1a1510",
+  "lang": "en",
   "icons": [
     {
       "src": "/static/icons/icon-192.png",
