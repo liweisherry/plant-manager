@@ -102,17 +102,8 @@ def plant_detail(plant_id: int, request: Request, db: Session = Depends(get_db))
     )
     now = datetime.utcnow()
     days_since_water = (now - last_water).days if last_water else None
-    water_sched = schedules.get("water")
-    if water_sched:
-        freq = water_sched.frequency_days
-        if days_since_water is None or days_since_water >= freq:
-            mood = "thirsty"
-        elif days_since_water <= freq // 2:
-            mood = "thriving"
-        else:
-            mood = "stable"
-    else:
-        mood = "stable" if last_water else "unknown"
+    vitality = plant_vitality(db, plant_id)
+    mood = vitality["status"].lower()  # thriving | stable | thirsty | unknown
 
     schedule_items = []
     for care_type, sched in schedules.items():
@@ -130,7 +121,6 @@ def plant_detail(plant_id: int, request: Request, db: Session = Depends(get_db))
             "overdue": days_until < 0,
         })
 
-    vitality = plant_vitality(db, plant_id)
     cover = next((p for p in photos if p.id == plant.cover_photo_id), photos[0] if photos else None)
 
     return templates.TemplateResponse(

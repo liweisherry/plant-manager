@@ -38,7 +38,7 @@
       </div>
       <div class="pd-stat">
         <span class="pd-stat__label">{{ t.vitality if t else "VITALITY" }}</span>
-        <span class="pd-stat__value">{{ vitality }}</span>
+        <span class="pd-stat__value">{{ "%.1f" | format(vitality.score) }}</span>
       </div>
     </div>
 
