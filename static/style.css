@@ -863,9 +863,9 @@ input, select, textarea, button { font: inherit; }
 .pd-log { display: flex; flex-direction: column; }
 .pd-log-item {
   display: grid;
-  grid-template-columns: 80px 1fr 24px;
+  grid-template-columns: 80px 1fr auto;
   align-items: start;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 1.1rem 0;
   border-bottom: 1px solid var(--border);
 }
@@ -890,10 +890,34 @@ input, select, textarea, button { font: inherit; }
   color: var(--dark);
 }
 .pd-log-notes { font-size: .8rem; color: var(--muted); line-height: 1.5; }
-.pd-log-check {
-  font-size: .75rem; color: var(--muted);
-  padding-top: .2rem; text-align: right;
+.pd-log-del {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: .75rem; padding: .2rem .3rem;
+  line-height: 1; border-radius: 3px; flex-shrink: 0; align-self: start;
+  transition: color .15s;
 }
+.pd-log-del:hover { color: var(--rust); }
+
+.pd-log-edit > summary {
+  display: inline-block; cursor: pointer; list-style: none;
+  font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-top: .35rem;
+  transition: color .15s;
+}
+.pd-log-edit > summary::-webkit-details-marker { display: none; }
+.pd-log-edit > summary:hover { color: var(--dark); }
+.pd-log-edit-form {
+  display: flex; flex-direction: column; gap: .4rem;
+  margin-top: .5rem; padding: .65rem; background: var(--cream);
+  border-radius: var(--radius); border: 1px solid var(--border);
+}
+.pd-log-edit-form input[type="datetime-local"],
+.pd-log-edit-form input[type="text"] {
+  padding: .4rem .6rem; border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: .82rem;
+  background: var(--surface); color: var(--dark); width: 100%;
+}
+
 .pd-empty { font-size: .85rem; color: var(--muted); font-style: italic; }
 
 /* Upload toggle */

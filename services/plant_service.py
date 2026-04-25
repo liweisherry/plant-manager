@@ -118,6 +118,29 @@ def log_care(
     return entry
 
 
+def update_care_log(
+    db: Session, log_id: int, notes: Optional[str], performed_at: Optional[datetime]
+) -> Optional[CareLog]:
+    entry = db.get(CareLog, log_id)
+    if not entry:
+        return None
+    if notes is not None:
+        entry.notes = notes or None
+    if performed_at is not None:
+        entry.performed_at = performed_at
+    db.commit()
+    return entry
+
+
+def delete_care_log(db: Session, log_id: int) -> bool:
+    entry = db.get(CareLog, log_id)
+    if not entry:
+        return False
+    db.delete(entry)
+    db.commit()
+    return True
+
+
 def get_care_logs(
     db: Session, plant_id: int, limit: int = 50
 ) -> list[CareLog]:

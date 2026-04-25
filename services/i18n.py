@@ -29,7 +29,7 @@ EN = {
     "mood_thirsty": "Thirsty", "mood_thriving": "Thriving", "mood_stable": "Stable",
     "scheduled_rituals": "SCHEDULED RITUALS", "care_history": "CARE HISTORY",
     "every": "Every", "overdue_badge": "OVERDUE", "due_badge": "DUE",
-    "days_late": "day(s) late",
+    "days_late": "day(s) late", "confirm_delete_log": "Delete this entry?",
 
     "edit": "Edit", "delete": "Delete",
     "confirm_delete_plant": "Delete this plant?",
@@ -96,7 +96,7 @@ ZH = {
     "mood_thirsty": "需要浇水", "mood_thriving": "茁壮", "mood_stable": "稳定",
     "scheduled_rituals": "养护计划", "care_history": "养护记录",
     "every": "每", "overdue_badge": "已逾期", "due_badge": "待完成",
-    "days_late": "天逾期",
+    "days_late": "天逾期", "confirm_delete_log": "确认删除这条记录？",
 
     "edit": "编辑", "delete": "删除",
     "confirm_delete_plant": "确认删除这株植物？",

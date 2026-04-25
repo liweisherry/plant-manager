@@ -130,8 +130,23 @@
           {% else %}{{ t.js_fertilize if t else "Fertilising" }}{% endif %}
         </p>
         {% if entry.notes %}<p class="pd-log-notes">{{ entry.notes }}</p>{% endif %}
+
+        <details class="pd-log-edit">
+          <summary>{{ t.edit if t else "Edit" }}</summary>
+          <form method="post" action="/plants/{{ plant.id }}/care/logs/{{ entry.id }}/edit"
+                class="pd-log-edit-form">
+            <input type="datetime-local" name="performed_at"
+                   value="{{ entry.performed_at.strftime('%Y-%m-%dT%H:%M') }}" />
+            <input type="text" name="notes" value="{{ entry.notes or '' }}"
+                   placeholder="{{ t.label_notes if t else 'Notes' }}" />
+            <button type="submit" class="btn btn-sm">{{ t.save if t else "Save" }}</button>
+          </form>
+        </details>
       </div>
-      <div class="pd-log-check">✓</div>
+      <form method="post" action="/plants/{{ plant.id }}/care/logs/{{ entry.id }}/delete"
+            onsubmit="return confirm('{{ t.confirm_delete_log if t else "Delete this entry?" }}')">
+        <button type="submit" class="pd-log-del" title="{{ t.delete if t else 'Delete' }}">✕</button>
+      </form>
     </div>
     {% endfor %}
   </div>
