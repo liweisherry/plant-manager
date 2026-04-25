@@ -1,5 +1,5 @@
 """Plant CRUD — HTML pages + JSON API."""
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -100,6 +100,39 @@ def plant_detail(plant_id: int, request: Request, db: Session = Depends(get_db))
         .limit(10)
         .all()
     )
+    now = datetime.utcnow()
+    days_since_water = (now - last_water).days if last_water else None
+    water_sched = schedules.get("water")
+    if water_sched:
+        freq = water_sched.frequency_days
+        if days_since_water is None or days_since_water >= freq:
+            mood = "thirsty"
+        elif days_since_water <= freq // 2:
+            mood = "thriving"
+        else:
+            mood = "stable"
+    else:
+        mood = "stable" if last_water else "unknown"
+
+    schedule_items = []
+    for care_type, sched in schedules.items():
+        last_dt = last_water if care_type == "water" else last_fertilize
+        if last_dt:
+            next_due = last_dt + timedelta(days=sched.frequency_days)
+            days_until = (next_due - now).days
+        else:
+            next_due = None
+            days_until = -999
+        schedule_items.append({
+            "care_type": care_type,
+            "next_due": next_due,
+            "days_until": days_until,
+            "overdue": days_until < 0,
+        })
+
+    vitality = plant_vitality(db, plant_id)
+    cover = next((p for p in photos if p.id == plant.cover_photo_id), photos[0] if photos else None)
+
     return templates.TemplateResponse(
         "plant_detail.html",
         {
@@ -107,6 +140,9 @@ def plant_detail(plant_id: int, request: Request, db: Session = Depends(get_db))
             "plant": plant, "schedules": schedules, "logs": logs,
             "last_water": last_water, "last_fertilize": last_fertilize,
             "photos": photos, "ai_results": ai_results,
+            "mood": mood, "days_since_water": days_since_water,
+            "schedule_items": schedule_items, "vitality": vitality,
+            "cover": cover, "now": now,
         },
     )
 

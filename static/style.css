@@ -717,3 +717,196 @@ input, select, textarea, button { font: inherit; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 99px; }
+
+/* ── Plant Detail ─────────────────────────────────────────────────────────── */
+.pd-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  margin-bottom: 1rem;
+  align-items: start;
+}
+.pd-cover {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--cream-dark);
+  aspect-ratio: 3/4;
+}
+.pd-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pd-cover-empty {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem; opacity: .2;
+}
+
+.pd-specimen {
+  font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 1rem;
+}
+.pd-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: var(--dark);
+  margin-bottom: .5rem;
+}
+.pd-species {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+.pd-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: var(--surface);
+}
+.pd-stat {
+  padding: .85rem 1rem;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.pd-stat:last-child { border-right: none; }
+.pd-stat__label {
+  font-size: .57rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.pd-stat__value {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--dark);
+  line-height: 1.2;
+}
+.pd-stat__value--thirsty { color: var(--rust); }
+.pd-stat__value--thriving { color: #2d6040; }
+.pd-stat__value--stable   { color: var(--dark); }
+
+.pd-location {
+  font-size: .85rem; color: var(--muted); margin-bottom: 1.25rem;
+}
+.pd-location em { font-style: italic; color: var(--rust); }
+.pd-notes {
+  font-size: .85rem; color: var(--dark-2); line-height: 1.65;
+  margin-bottom: 1.5rem;
+  padding-left: .85rem;
+  border-left: 2px solid var(--rust-light);
+}
+.pd-actions { display: flex; gap: .5rem; align-items: center; margin-top: auto; padding-top: .5rem; }
+
+/* Sections */
+.pd-section { border-top: 1px solid var(--border); padding: 2.5rem 0; }
+.pd-section-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+.pd-section-title {
+  font-size: .6rem; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+}
+.pd-care-btns { display: flex; gap: .5rem; }
+.pd-ritual-btn {
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--dark-2);
+}
+.pd-ritual-btn:hover { background: var(--cream-dark); }
+
+/* Scheduled Rituals */
+.pd-rituals { display: flex; flex-direction: column; }
+.pd-ritual-item {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.pd-ritual-item:last-child { border-bottom: none; }
+.pd-ritual-date { display: flex; flex-direction: column; gap: .15rem; }
+.pd-ritual-day {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: .95rem;
+  color: var(--dark);
+}
+.pd-ritual-day--overdue { color: var(--rust); }
+.pd-ritual-sub {
+  font-size: .58rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted);
+}
+.pd-ritual-content { display: flex; flex-direction: column; gap: .2rem; }
+.pd-ritual-name {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--dark);
+}
+.pd-ritual-notes { font-size: .78rem; color: var(--muted); }
+.pd-ritual-status {
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted);
+}
+.pd-ritual-status--overdue { color: var(--rust); }
+
+/* Care History */
+.pd-log { display: flex; flex-direction: column; }
+.pd-log-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 24px;
+  align-items: start;
+  gap: 2rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.pd-log-item:last-child { border-bottom: none; }
+.pd-log-date { display: flex; flex-direction: column; gap: .15rem; padding-top: .1rem; }
+.pd-log-day {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: .9rem;
+  color: var(--dark-2);
+  text-transform: uppercase;
+}
+.pd-log-year {
+  font-size: .58rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.pd-log-content { display: flex; flex-direction: column; gap: .2rem; }
+.pd-log-type {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--dark);
+}
+.pd-log-notes { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+.pd-log-check {
+  font-size: .75rem; color: var(--muted);
+  padding-top: .2rem; text-align: right;
+}
+.pd-empty { font-size: .85rem; color: var(--muted); font-style: italic; }
+
+/* Upload toggle */
+.pd-upload-toggle > summary { cursor: pointer; list-style: none; }
+.pd-upload-toggle > summary::-webkit-details-marker { display: none; }
+
+/* Mobile */
+@media (max-width: 680px) {
+  .pd-hero { grid-template-columns: 1fr; gap: 1.5rem; }
+  .pd-cover { aspect-ratio: 4/3; max-height: 300px; }
+  .pd-title { font-size: 2rem; }
+  .pd-stats { grid-template-columns: 1fr 1fr 1fr; }
+  .pd-stat { padding: .65rem .75rem; }
+  .pd-ritual-item { grid-template-columns: 100px 1fr auto; gap: 1rem; }
+  .pd-log-item { grid-template-columns: 65px 1fr 20px; gap: 1rem; }
+}

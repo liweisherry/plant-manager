@@ -25,9 +25,15 @@ EN = {
     "ai_care_tips": "AI Care Tips",
     "save_changes": "Save Changes",
 
+    "specimen": "SPECIMEN", "stat_mood": "MOOD", "resides_in": "Resides in",
+    "mood_thirsty": "Thirsty", "mood_thriving": "Thriving", "mood_stable": "Stable",
+    "scheduled_rituals": "SCHEDULED RITUALS", "care_history": "CARE HISTORY",
+    "every": "Every", "overdue_badge": "OVERDUE", "due_badge": "DUE",
+    "days_late": "day(s) late",
+
     "edit": "Edit", "delete": "Delete",
     "confirm_delete_plant": "Delete this plant?",
-    "since": "Since:", "last_watered": "Last watered:", "last_fed": "Last fed:",
+    "since": "Since:", "last_watered": "LAST WATERED", "last_fed": "Last fed:",
     "section_photos": "Photos", "set_cover": "Set as cover", "cover": "Cover",
     "confirm_delete_photo": "Delete this photo?", "no_photos": "No photos yet",
     "upload_photo_label": "Upload Photo", "photo_type": "Photo Type",
@@ -86,9 +92,15 @@ ZH = {
     "ai_care_tips": "AI 养护建议",
     "save_changes": "保存修改",
 
+    "specimen": "植物", "stat_mood": "状态", "resides_in": "位于",
+    "mood_thirsty": "需要浇水", "mood_thriving": "茁壮", "mood_stable": "稳定",
+    "scheduled_rituals": "养护计划", "care_history": "养护记录",
+    "every": "每", "overdue_badge": "已逾期", "due_badge": "待完成",
+    "days_late": "天逾期",
+
     "edit": "编辑", "delete": "删除",
     "confirm_delete_plant": "确认删除这株植物？",
-    "since": "入手：", "last_watered": "上次浇水：", "last_fed": "上次施肥：",
+    "since": "入手：", "last_watered": "上次浇水", "last_fed": "上次施肥：",
     "section_photos": "照片", "set_cover": "设为封面", "cover": "封面",
     "confirm_delete_photo": "确认删除照片？", "no_photos": "暂无照片",
     "upload_photo_label": "上传照片", "photo_type": "照片类型",
