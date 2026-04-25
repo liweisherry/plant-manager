@@ -25,7 +25,7 @@
   <header class="site-header">
     <a href="/" class="logo">The Root</a>
 
-    <!-- Desktop nav -->
+    <!-- Desktop nav (hidden on mobile) -->
     <nav class="nav-desktop">
       <a href="/settings">{{ t.nav_settings if t else "Settings" }}</a>
       <a href="/plants/new" class="nav-cta">{{ t.nav_add if t else "+ Add" }}</a>
@@ -34,7 +34,47 @@
       </form>
     </nav>
 
+    <!-- Mobile hamburger (hidden on desktop) -->
+    <button class="nav-hamburger" id="nav-open" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </header>
+
+  <!-- Mobile sidebar (hidden on desktop) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <span class="sidebar-brand__mark">✳</span>
+        <span class="sidebar-brand__name">The Root</span>
+      </div>
+      <button class="sidebar-close" id="nav-close" aria-label="Close menu">✕</button>
+    </div>
+    <p class="sidebar-sub">{{ t.sidebar_sub if t else "Your Plant Sanctuary" }}</p>
+    <nav class="sidebar-nav">
+      <p class="sidebar-section-label">{{ t.sidebar_garden if t else "Garden" }}</p>
+      <a href="/" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        {{ t.nav_home if t else "The Haven" }}
+      </a>
+      <a href="/plants/new" class="sidebar-link sidebar-link--add">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V13"/><path d="M12 13C12 8 8 5 4 6c0 4 4 7 8 7z"/><path d="M12 13c0-5 4-8 8-7 0 4-4 7-8 7z"/></svg>
+        {{ t.nav_add_plant if t else "Add Plant" }}
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+        {{ t.nav_settings if t else "Settings" }}
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <form method="post" action="/lang/{{ t.lang_target if t else 'zh' }}" style="margin:0">
+        <button type="submit" class="sidebar-lang">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          {{ t.lang_toggle if t else "中文" }}
+        </button>
+      </form>
+    </div>
+  </aside>
 
   <main class="container">
     {% block content %}{% endblock %}
@@ -45,6 +85,15 @@
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/static/sw.js");
     }
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebar-overlay");
+    const btnOpen = document.getElementById("nav-open");
+    const btnClose = document.getElementById("nav-close");
+    function openSidebar()  { sidebar.classList.add("is-open"); overlay.classList.add("is-open"); document.body.style.overflow = "hidden"; }
+    function closeSidebar() { sidebar.classList.remove("is-open"); overlay.classList.remove("is-open"); document.body.style.overflow = ""; }
+    if (btnOpen) btnOpen.addEventListener("click", openSidebar);
+    if (btnClose) btnClose.addEventListener("click", closeSidebar);
+    if (overlay) overlay.addEventListener("click", closeSidebar);
   </script>
 </body>
 </html>
