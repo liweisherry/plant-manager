@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Settings · The Root{% endblock %}
+{% block title %}{{ t.settings }} · The Root{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1>Settings</h1>
+  <h1>{{ t.settings }}</h1>
 </div>
 
 <div class="form-card" style="max-width:560px;">
   <div class="form-section">
     <h2>Gemini API Key</h2>
     <p style="font-size:.88rem;color:var(--gray-600);margin-bottom:1rem;line-height:1.6;">
-      AI identification and care advice require a Gemini API Key.<br>
-      Your key is saved only in your browser and never sent to the server.<br>
+      {{ t.gemini_desc1 }}<br>
+      {{ t.gemini_desc2 }}<br>
       <a href="https://aistudio.google.com/apikey" target="_blank"
-         style="color:var(--green-600);">→ Get a free Gemini API Key</a>
+         style="color:var(--green-600);">{{ t.get_key }}</a>
     </p>
 
     <div class="form-group">
@@ -21,22 +21,22 @@
       <div style="display:flex;gap:.5rem;">
         <input id="gemini-key" type="password" placeholder="AIza..."
                style="flex:1;" autocomplete="off" />
-        <button id="toggle-visibility" type="button" class="btn btn-ghost btn-sm"
-                title="Show / hide">👁</button>
+        <button id="toggle-visibility" type="button" class="btn btn-ghost btn-sm">👁</button>
       </div>
       <small id="key-status" class="field-hint"></small>
     </div>
 
     <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-      <button id="save-key" class="btn">Save</button>
-      <button id="clear-key" class="btn btn-ghost">Clear Key</button>
-      <button id="test-key" class="btn btn-ghost">Test Connection</button>
+      <button id="save-key" class="btn">{{ t.save }}</button>
+      <button id="clear-key" class="btn btn-ghost">{{ t.clear_key }}</button>
+      <button id="test-key" class="btn btn-ghost">{{ t.test_connection }}</button>
     </div>
   </div>
 </div>
 
 <script>
 (function () {
+  const T = window.APP_T || {};
   const input   = document.getElementById("gemini-key");
   const status  = document.getElementById("key-status");
   const saveBtn = document.getElementById("save-key");
@@ -45,10 +45,7 @@
   const toggle  = document.getElementById("toggle-visibility");
 
   const saved = localStorage.getItem("gemini_api_key") || "";
-  if (saved) {
-    input.value = saved;
-    status.textContent = "✅ Saved";
-  }
+  if (saved) { input.value = saved; status.textContent = T.key_saved || "✅ Saved"; }
 
   toggle.addEventListener("click", () => {
     input.type = input.type === "password" ? "text" : "password";
@@ -56,31 +53,31 @@
 
   saveBtn.addEventListener("click", () => {
     const key = input.value.trim();
-    if (!key) { status.textContent = "⚠️ Please enter a key"; return; }
+    if (!key) { status.textContent = T.key_enter || "⚠️ Please enter a key"; return; }
     localStorage.setItem("gemini_api_key", key);
-    status.textContent = "✅ Saved";
+    status.textContent = T.key_saved || "✅ Saved";
   });
 
   clearBtn.addEventListener("click", () => {
     localStorage.removeItem("gemini_api_key");
     input.value = "";
-    status.textContent = "🗑 Cleared";
+    status.textContent = T.key_cleared || "🗑 Cleared";
   });
 
   testBtn.addEventListener("click", async () => {
     const key = input.value.trim();
-    if (!key) { status.textContent = "⚠️ Please enter a key first"; return; }
+    if (!key) { status.textContent = T.key_enter_first || "⚠️ Please enter a key first"; return; }
     testBtn.disabled = true;
-    status.textContent = "Testing…";
+    status.textContent = T.testing || "Testing…";
     try {
       const res  = await fetch("/api/test-key", {
         method: "POST",
         headers: { "X-Gemini-Key": key, "Content-Type": "application/json" },
       });
       const data = await res.json();
-      status.textContent = data.ok ? "✅ Connected!" : "❌ " + data.error;
+      status.textContent = data.ok ? (T.connected || "✅ Connected!") : "❌ " + data.error;
     } catch (_) {
-      status.textContent = "❌ Network error";
+      status.textContent = T.network_error || "❌ Network error";
     } finally {
       testBtn.disabled = false;
     }

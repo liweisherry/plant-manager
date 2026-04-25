@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}{{ "Edit Plant" if plant else "Add Plant" }}{% endblock %}
+{% block title %}{{ t.edit_plant if plant else t.add_plant_title }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1>{{ "Edit Plant" if plant else "Add Plant" }}</h1>
+  <h1>{{ t.edit_plant if plant else t.add_plant_title }}</h1>
   {% if plant %}
-  <a href="/plants/{{ plant.id }}" class="btn btn-ghost">Cancel</a>
+  <a href="/plants/{{ plant.id }}" class="btn btn-ghost">{{ t.cancel }}</a>
   {% else %}
-  <a href="/" class="btn btn-ghost">Cancel</a>
+  <a href="/" class="btn btn-ghost">{{ t.cancel }}</a>
   {% endif %}
 </div>
 
@@ -18,51 +18,52 @@
   id="plant-form"
 >
   <div class="form-section">
-    <h2>Details</h2>
+    <h2>{{ t.section_details }}</h2>
 
     <div class="form-group">
-      <label for="name">Name <span class="required">*</span></label>
+      <label for="name">{{ t.label_name }} <span class="required">*</span></label>
       <input id="name" name="name" type="text" required
              list="name-datalist" autocomplete="off"
-             value="{{ plant.name if plant else '' }}" placeholder="e.g. Rainbow Succulent" />
+             value="{{ plant.name if plant else '' }}"
+             placeholder="{{ 'e.g. Rainbow Succulent' if t.lang_target == 'zh' else '例：虹之玉' }}" />
       <datalist id="name-datalist"></datalist>
       <small id="name-hint" class="field-hint"></small>
     </div>
 
     <div class="form-group">
-      <label for="species">Species / Latin Name</label>
+      <label for="species">{{ t.label_species }}</label>
       <input id="species" name="species" type="text" autocomplete="off"
              value="{{ plant.species or '' }}"
-             placeholder="e.g. Sedum rubrotinctum (auto-filled from suggestions)" />
+             placeholder="e.g. Sedum rubrotinctum" />
     </div>
 
     <div class="form-group">
-      <label for="location">Location</label>
+      <label for="location">{{ t.label_location }}</label>
       <input id="location" name="location" type="text"
-             value="{{ plant.location or '' }}" placeholder="e.g. Living room window" />
+             value="{{ plant.location or '' }}" />
     </div>
     <div class="form-group">
-      <label for="purchase_date">Date Acquired</label>
+      <label for="purchase_date">{{ t.label_date }}</label>
       <input id="purchase_date" name="purchase_date" type="date"
              value="{{ plant.purchase_date.isoformat() if plant and plant.purchase_date else '' }}" />
     </div>
     <div class="form-group">
-      <label for="notes">Notes</label>
+      <label for="notes">{{ t.label_notes }}</label>
       <textarea id="notes" name="notes" rows="3"
-                placeholder="Care tips, source, etc…">{{ plant.notes or '' }}</textarea>
+                placeholder="{{ t.placeholder_notes }}">{{ plant.notes or '' }}</textarea>
     </div>
   </div>
 
   <div class="form-section">
-    <h2>Care Schedule</h2>
+    <h2>{{ t.section_schedule }}</h2>
     <div class="form-row">
       <div class="form-group">
-        <label for="water_days">Watering Interval (days)</label>
+        <label for="water_days">{{ t.label_water_days }}</label>
         <input id="water_days" name="water_days" type="number" min="1" max="365"
                value="{{ schedules.water.frequency_days if schedules and 'water' in schedules else 7 }}" />
       </div>
       <div class="form-group">
-        <label for="fertilize_days">Fertilising Interval (days)</label>
+        <label for="fertilize_days">{{ t.label_fertilize_days }}</label>
         <input id="fertilize_days" name="fertilize_days" type="number" min="1" max="365"
                value="{{ schedules.fertilize.frequency_days if schedules and 'fertilize' in schedules else 30 }}" />
       </div>
@@ -70,12 +71,12 @@
   </div>
 
   <div id="care-tips-section" class="form-section" hidden>
-    <h2>🌿 AI Care Tips <span id="care-tips-plant-name" style="font-weight:400;color:var(--gray-400);font-size:.9rem;"></span></h2>
+    <h2>🌿 {{ t.ai_care_tips }} <span id="care-tips-plant-name" style="font-weight:400;color:var(--gray-400);font-size:.9rem;"></span></h2>
     <div id="care-tips-content" class="care-tips-grid"></div>
   </div>
 
   <div class="form-actions">
-    <button type="submit" class="btn">{{ "Save Changes" if plant else "Add Plant" }}</button>
+    <button type="submit" class="btn">{{ t.save_changes if plant else t.add_plant_title }}</button>
   </div>
 </form>
 {% endblock %}

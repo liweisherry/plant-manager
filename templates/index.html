@@ -1,39 +1,36 @@
 {% extends "base.html" %}
-{% block title %}The Conservatory · The Root{% endblock %}
+{% block title %}{{ t.conservatory }} · The Root{% endblock %}
 
 {% block content %}
 
-<!-- Hero -->
 <div class="hero">
-  <p class="section-label">The Conservatory</p>
-  <h1 class="hero-title">A quiet record of every<br><em class="hero-accent">soul</em> in your care.</h1>
+  <p class="section-label">{{ t.conservatory }}</p>
+  <h1 class="hero-title">{{ t.hero_line1 }}<br><em class="hero-accent">{{ t.hero_accent }}</em>{% if t.hero_line2 %} {{ t.hero_line2 }}{% endif %}</h1>
 </div>
 
-<!-- Stats -->
 <div class="stats-bar">
   <div class="stat">
-    <span class="stat-label">Souls in Care</span>
+    <span class="stat-label">{{ t.stat_souls }}</span>
     <span class="stat-value">{{ "%02d"|format(stats.total) }}</span>
   </div>
   <div class="stat">
-    <span class="stat-label">Thriving</span>
+    <span class="stat-label">{{ t.stat_thriving }}</span>
     <span class="stat-value">{{ "%02d"|format(stats.thriving) }}</span>
   </div>
   <div class="stat">
-    <span class="stat-label">Need Attention</span>
+    <span class="stat-label">{{ t.stat_attention }}</span>
     <span class="stat-value">{{ "%02d"|format(stats.need_attention) }}</span>
   </div>
   <div class="stat">
-    <span class="stat-label">Avg. Vitality</span>
+    <span class="stat-label">{{ t.stat_vitality }}</span>
     <span class="stat-value">{{ stats.avg_vitality }}</span>
   </div>
 </div>
 
-<!-- Plant grid -->
 {% if plants %}
 <div class="specimens-header">
-  <p class="section-label">All Specimens</p>
-  <a href="/plants/new" class="btn-text">+ Welcome a new soul</a>
+  <p class="section-label">{{ t.all_specimens }}</p>
+  <a href="/plants/new" class="btn-text">{{ t.welcome_new }}</a>
 </div>
 
 <div class="specimen-grid">
@@ -57,11 +54,11 @@
       {% if plant.species %}<p class="specimen-species">{{ plant.species }}</p>{% endif %}
       <div class="specimen-meta">
         {% if v.days_since_water is not none %}
-        <span>Last watered · {{ v.days_since_water }}d ago</span>
+        <span>{{ t.watered_ago }}{{ v.days_since_water }}{{ t.days_ago }}</span>
         {% else %}
-        <span>Not yet watered</span>
+        <span>{{ t.not_watered }}</span>
         {% endif %}
-        <span>Vitality {{ v.score }}</span>
+        <span>{{ t.vitality }} {{ v.score }}</span>
       </div>
     </div>
   </a>
@@ -71,8 +68,8 @@
 {% else %}
 <div class="empty-state">
   <div class="empty-state__icon">⌘</div>
-  <p>Your conservatory is empty.<br>Welcome your first soul.</p>
-  <a href="/plants/new" class="btn" style="margin-top:1.25rem;">Add a Plant</a>
+  <p>{{ t.empty_line1 }}<br>{{ t.empty_line2 }}</p>
+  <a href="/plants/new" class="btn" style="margin-top:1.25rem;">{{ t.add_plant }}</a>
 </div>
 {% endif %}
 

@@ -27,7 +27,7 @@ document.querySelectorAll("form").forEach((form) => {
     const btn = form.querySelector('button[type="submit"]');
     if (!btn) return;
     btn.disabled = true;
-    btn.textContent = "Processing…";
+    btn.textContent = (window.APP_T && window.APP_T.js_processing) || "Processing…";
   });
 });
 
@@ -97,7 +97,8 @@ document.querySelectorAll("form").forEach((form) => {
 
     tipsSection.hidden = false;
     tipsLabel.textContent = name;
-    tipsContent.innerHTML = '<p class="tips-loading">Loading…</p>';
+    const T = window.APP_T || {};
+    tipsContent.innerHTML = '<p class="tips-loading">' + (T.js_loading || "Loading…") + '</p>';
 
     try {
       const url =
@@ -106,22 +107,23 @@ document.querySelectorAll("form").forEach((form) => {
       const res  = await fetch(url, { headers: geminiHeaders() });
       const data = await res.json();
       if (data.error) {
-        tipsContent.innerHTML = '<p class="tips-error">AI service unavailable</p>';
+        tipsContent.innerHTML = '<p class="tips-error">' + (T.js_ai_unavailable || "AI service unavailable") + '</p>';
         return;
       }
       renderTips(data);
     } catch (_) {
-      tipsContent.innerHTML = '<p class="tips-error">Failed to load, please try again</p>';
+      tipsContent.innerHTML = '<p class="tips-error">' + (T.js_load_failed || "Failed to load, please try again") + '</p>';
     }
   }
 
+  const T2 = window.APP_T || {};
   const TIPS_LABELS = {
-    water:         { icon: "💧", label: "Watering" },
-    light:         { icon: "☀️",  label: "Light" },
-    temperature:   { icon: "🌡️",  label: "Temperature" },
-    humidity:      { icon: "💦",  label: "Humidity" },
-    fertilize:     { icon: "🌿",  label: "Fertilising" },
-    common_issues: { icon: "⚠️",  label: "Common Issues" },
+    water:         { icon: "💧", label: T2.js_water        || "Watering" },
+    light:         { icon: "☀️",  label: T2.js_light        || "Light" },
+    temperature:   { icon: "🌡️",  label: T2.js_temperature  || "Temperature" },
+    humidity:      { icon: "💦",  label: T2.js_humidity     || "Humidity" },
+    fertilize:     { icon: "🌿",  label: T2.js_fertilize    || "Fertilising" },
+    common_issues: { icon: "⚠️",  label: T2.js_issues       || "Common Issues" },
   };
 
   function renderTips(data) {

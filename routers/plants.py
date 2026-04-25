@@ -1,6 +1,5 @@
 """Plant CRUD — HTML pages + JSON API."""
 from datetime import date
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -9,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from config.settings import BASE_DIR
 from db.database import get_db
-from db.models import CareSchedule
 from services import plant_service
+from services.i18n import get_t
 from services.plant_service import get_care_logs, last_care, plant_vitality, plants_stats
 
 router = APIRouter()
@@ -20,11 +19,25 @@ templates.env.globals["photo_src"] = (
 )
 
 
+# ── Language switch ───────────────────────────────────────────────────────────
+
+@router.post("/lang/{code}")
+def set_language(code: str, request: Request):
+    referer = request.headers.get("referer", "/")
+    response = RedirectResponse(referer, status_code=303)
+    if code in ("en", "zh"):
+        response.set_cookie("lang", code, max_age=365 * 24 * 3600, samesite="lax")
+    return response
+
+
 # ── Pages ─────────────────────────────────────────────────────────────────────
 
 @router.get("/settings", response_class=HTMLResponse)
 def settings_page(request: Request):
-    return templates.TemplateResponse("settings.html", {"request": request})
+    return templates.TemplateResponse(
+        "settings.html", {"request": request, "t": get_t(request)}
+    )
+
 
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request, db: Session = Depends(get_db)):
@@ -33,8 +46,8 @@ def index(request: Request, db: Session = Depends(get_db)):
     stats = plants_stats(db)
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "plants": plants,
-         "vitalities": vitalities, "stats": stats},
+        {"request": request, "t": get_t(request),
+         "plants": plants, "vitalities": vitalities, "stats": stats},
     )
 
 
@@ -42,7 +55,7 @@ def index(request: Request, db: Session = Depends(get_db)):
 def new_plant_form(request: Request):
     return templates.TemplateResponse(
         "plant_form.html",
-        {"request": request, "plant": None, "schedules": {}},
+        {"request": request, "t": get_t(request), "plant": None, "schedules": {}},
     )
 
 
@@ -60,12 +73,8 @@ def create_plant(
 ):
     pd = date.fromisoformat(purchase_date) if purchase_date else None
     plant = plant_service.create_plant(
-        db,
-        name=name,
-        species=species or None,
-        location=location or None,
-        purchase_date=pd,
-        notes=notes or None,
+        db, name=name, species=species or None,
+        location=location or None, purchase_date=pd, notes=notes or None,
     )
     plant_service.upsert_schedule(db, plant.id, "water", water_days)
     plant_service.upsert_schedule(db, plant.id, "fertilize", fertilize_days)
@@ -94,14 +103,10 @@ def plant_detail(plant_id: int, request: Request, db: Session = Depends(get_db))
     return templates.TemplateResponse(
         "plant_detail.html",
         {
-            "request": request,
-            "plant": plant,
-            "schedules": schedules,
-            "logs": logs,
-            "last_water": last_water,
-            "last_fertilize": last_fertilize,
-            "photos": photos,
-            "ai_results": ai_results,
+            "request": request, "t": get_t(request),
+            "plant": plant, "schedules": schedules, "logs": logs,
+            "last_water": last_water, "last_fertilize": last_fertilize,
+            "photos": photos, "ai_results": ai_results,
         },
     )
 
@@ -114,7 +119,7 @@ def edit_plant_form(plant_id: int, request: Request, db: Session = Depends(get_d
     schedules = {s.care_type: s for s in plant_service.get_schedules(db, plant_id)}
     return templates.TemplateResponse(
         "plant_form.html",
-        {"request": request, "plant": plant, "schedules": schedules},
+        {"request": request, "t": get_t(request), "plant": plant, "schedules": schedules},
     )
 
 
@@ -132,13 +137,8 @@ def update_plant(
 ):
     pd = date.fromisoformat(purchase_date) if purchase_date else None
     plant_service.update_plant(
-        db,
-        plant_id,
-        name=name,
-        species=species or None,
-        location=location or None,
-        purchase_date=pd,
-        notes=notes or None,
+        db, plant_id, name=name, species=species or None,
+        location=location or None, purchase_date=pd, notes=notes or None,
     )
     plant_service.upsert_schedule(db, plant_id, "water", water_days)
     plant_service.upsert_schedule(db, plant_id, "fertilize", fertilize_days)
@@ -156,12 +156,5 @@ def soft_delete_plant(plant_id: int, db: Session = Depends(get_db)):
 @router.get("/api/plants")
 def api_list_plants(db: Session = Depends(get_db)):
     plants = plant_service.list_plants(db)
-    return [
-        {
-            "id": p.id,
-            "name": p.name,
-            "species": p.species,
-            "location": p.location,
-        }
-        for p in plants
-    ]
+    return [{"id": p.id, "name": p.name, "species": p.species, "location": p.location}
+            for p in plants]

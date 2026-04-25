@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ 'zh-CN' if t and t.lang_target == 'en' else 'en' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -19,14 +19,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/static/style.css" />
+  <script>window.APP_T = {{ t | tojson if t else '{}' }};</script>
 </head>
 <body>
   <header class="site-header">
     <a href="/" class="logo">The Root</a>
     <nav>
-      <a href="/">The Haven</a>
-      <a href="/settings">Settings</a>
-      <a href="/plants/new" class="nav-cta">+ Add</a>
+      <a href="/">{{ t.nav_home if t else "The Haven" }}</a>
+      <a href="/settings">{{ t.nav_settings if t else "Settings" }}</a>
+      <a href="/plants/new" class="nav-cta">{{ t.nav_add if t else "+ Add" }}</a>
+      <form method="post" action="/lang/{{ t.lang_target if t else 'zh' }}" style="display:inline;margin:0">
+        <button type="submit" class="nav-lang">{{ t.lang_toggle if t else "中文" }}</button>
+      </form>
     </nav>
   </header>
 
