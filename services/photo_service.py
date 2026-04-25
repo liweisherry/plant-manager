@@ -18,7 +18,9 @@ _USE_CLOUDINARY = bool(
 
 def _resize_to_jpeg(data: bytes) -> tuple[bytes, int, int]:
     """Returns (jpeg_bytes, width, height)."""
+    from PIL import ImageOps
     img = Image.open(io.BytesIO(data))
+    img = ImageOps.exif_transpose(img)  # honour EXIF rotation from phone cameras
     if img.mode not in ("RGB", "L"):
         img = img.convert("RGB")
     img.thumbnail((PHOTO_MAX_PX, PHOTO_MAX_PX), Image.LANCZOS)
@@ -35,7 +37,13 @@ def _save_local(jpeg_bytes: bytes, filename: str) -> int:
 
 
 def _cld_config() -> None:
+    import os, sys
     from urllib.parse import urlparse
+    # Remove CLOUDINARY_URL from env before first import so the SDK
+    # doesn't crash trying to parse a badly-formatted Railway env var.
+    # We configure it manually with parsed values instead.
+    if "cloudinary" not in sys.modules:
+        os.environ.pop("CLOUDINARY_URL", None)
     import cloudinary
     p = urlparse(CLOUDINARY_URL)
     cloudinary.config(cloud_name=p.hostname, api_key=p.username, api_secret=p.password)
