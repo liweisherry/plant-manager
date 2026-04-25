@@ -1,3 +1,9 @@
+/* ── Gemini Key helper ──────────────────────────────────────────────────────── */
+function geminiHeaders() {
+  const key = localStorage.getItem("gemini_api_key") || "";
+  return key ? { "X-Gemini-Key": key } : {};
+}
+
 /* ── Photo preview ─────────────────────────────────────────────────────────── */
 document.querySelectorAll('input[type="file"][accept="image/*"]').forEach((input) => {
   input.addEventListener("change", () => {
@@ -97,7 +103,7 @@ document.querySelectorAll("form").forEach((form) => {
       const url =
         "/api/care-tips?name=" + encodeURIComponent(name) +
         "&species=" + encodeURIComponent(species);
-      const res  = await fetch(url);
+      const res  = await fetch(url, { headers: geminiHeaders() });
       const data = await res.json();
       if (data.error) {
         tipsContent.innerHTML = '<p class="tips-error">AI 服务暂不可用</p>';

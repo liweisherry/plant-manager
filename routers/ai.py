@@ -1,8 +1,8 @@
 """AI endpoints — identify and care advice."""
 import logging
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Request, UploadFile
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -24,6 +24,7 @@ MAX_SIZE = 20 * 1024 * 1024
 async def identify(
     plant_id: int,
     file: UploadFile = File(...),
+    x_gemini_key: str = Header(default=""),
     db: Session = Depends(get_db),
 ):
     plant = get_plant(db, plant_id)
@@ -44,11 +45,14 @@ async def identify(
         photo_type="identify",
     )
     try:
-        result = ai_service.identify_plant(db, plant_id, photo.id, photo.filename)
-        # Update plant species if not yet set
+        result = ai_service.identify_plant(
+            db, plant_id, photo.id, photo.filename, api_key=x_gemini_key or None
+        )
         if result.identified_species and not plant.species:
             from services.plant_service import update_plant
             update_plant(db, plant_id, species=result.identified_species)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:
         log.error("AI identify failed: %s", exc)
         raise HTTPException(status_code=502, detail=f"AI service error: {exc}")
@@ -61,6 +65,7 @@ async def advice(
     plant_id: int,
     question: str = Form(...),
     photo_id: int = Form(0),
+    x_gemini_key: str = Header(default=""),
     db: Session = Depends(get_db),
 ):
     plant = get_plant(db, plant_id)
@@ -84,7 +89,10 @@ async def advice(
             question=question,
             photo_filename=photo_filename,
             photo_id=resolved_photo_id,
+            api_key=x_gemini_key or None,
         )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:
         log.error("AI advice failed: %s", exc)
         raise HTTPException(status_code=502, detail=f"AI service error: {exc}")

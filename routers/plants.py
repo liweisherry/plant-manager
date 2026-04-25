@@ -19,6 +19,10 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 # ── Pages ─────────────────────────────────────────────────────────────────────
 
+@router.get("/settings", response_class=HTMLResponse)
+def settings_page(request: Request):
+    return templates.TemplateResponse("settings.html", {"request": request})
+
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request, db: Session = Depends(get_db)):
     plants = plant_service.list_plants(db)

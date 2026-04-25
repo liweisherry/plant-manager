@@ -3,7 +3,6 @@ import logging
 from typing import Optional
 
 from google import genai
-from google.genai import types
 from PIL import Image
 import io
 from sqlalchemy.orm import Session
@@ -18,14 +17,17 @@ from db.models import AIResult
 
 log = logging.getLogger(__name__)
 
-_client: Optional[genai.Client] = None
+
+def _make_client(api_key: str) -> genai.Client:
+    return genai.Client(api_key=api_key)
 
 
-def _get_client() -> genai.Client:
-    global _client
-    if _client is None:
-        _client = genai.Client(api_key=GEMINI_API_KEY)
-    return _client
+def _resolve_key(user_key: Optional[str]) -> str:
+    """用请求里的 Key，没有则降级到服务器 env。"""
+    key = (user_key or "").strip() or GEMINI_API_KEY
+    if not key:
+        raise ValueError("未设置 Gemini API Key，请前往「设置」页面填写。")
+    return key
 
 
 def _load_image(filename: str) -> Image.Image:
@@ -40,7 +42,9 @@ def identify_plant(
     plant_id: int,
     photo_id: int,
     filename: str,
+    api_key: Optional[str] = None,
 ) -> AIResult:
+    client = _make_client(_resolve_key(api_key))
     prompt = (
         "请根据图片识别这株植物。\n"
         "用中文回答，包含：\n"
@@ -51,7 +55,7 @@ def identify_plant(
         "格式清晰，分段落。"
     )
     img = _load_image(filename)
-    response = _get_client().models.generate_content(
+    response = client.models.generate_content(
         model=GEMINI_VISION_MODEL,
         contents=[prompt, img],
     )
@@ -94,7 +98,9 @@ def get_care_advice(
     question: str,
     photo_filename: Optional[str] = None,
     photo_id: Optional[int] = None,
+    api_key: Optional[str] = None,
 ) -> AIResult:
+    client = _make_client(_resolve_key(api_key))
     system = (
         "你是一位经验丰富的植物养护专家，擅长中文解答。"
         "回答时简洁实用，直接给出可操作的建议。"
@@ -105,7 +111,6 @@ def get_care_advice(
     user_text = f"{plant_ctx}\n\n问题：{question}"
 
     contents: list = [system + "\n\n" + user_text]
-
     if photo_filename:
         try:
             contents.append(_load_image(photo_filename))
@@ -113,10 +118,7 @@ def get_care_advice(
             log.warning("Could not load photo %s: %s", photo_filename, e)
 
     model_name = GEMINI_VISION_MODEL if photo_filename else GEMINI_CHAT_MODEL
-    response = _get_client().models.generate_content(
-        model=model_name,
-        contents=contents,
-    )
+    response = client.models.generate_content(model=model_name, contents=contents)
     text = response.text
 
     usage = response.usage_metadata
