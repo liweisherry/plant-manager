@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}我的植物{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>我的植物</h1>
+  <a href="/plants/new" class="btn">+ 添加植物</a>
+</div>
+
+{% if plants %}
+<div class="plant-grid">
+  {% for plant in plants %}
+  <a href="/plants/{{ plant.id }}" class="plant-card">
+    <div class="plant-card__photo">
+      {% if plant.cover_photo_id %}
+        {% for photo in plant.photos %}
+          {% if photo.id == plant.cover_photo_id %}
+            <img src="/uploads/plants/{{ photo.filename }}" alt="{{ plant.name }}" loading="lazy" />
+          {% endif %}
+        {% endfor %}
+      {% elif plant.photos %}
+        <img src="/uploads/plants/{{ plant.photos[0].filename }}" alt="{{ plant.name }}" loading="lazy" />
+      {% else %}
+        <div class="plant-card__placeholder">🌱</div>
+      {% endif %}
+    </div>
+    <div class="plant-card__body">
+      <h3>{{ plant.name }}</h3>
+      {% if plant.species %}<p class="species">{{ plant.species }}</p>{% endif %}
+      {% if plant.location %}<p class="location">📍 {{ plant.location }}</p>{% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state__icon">🌱</div>
+  <p>还没有植物，快去添加第一株吧！</p>
+  <a href="/plants/new" class="btn">添加植物</a>
+</div>
+{% endif %}
+{% endblock %}

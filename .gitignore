@@ -1,0 +1,9 @@
+.env
+*.db
+__pycache__/
+*.pyc
+*.pyo
+uploads/plants/
+logs/
+.DS_Store
+generate_icons.py

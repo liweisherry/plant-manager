@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ "编辑植物" if plant else "添加植物" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ "编辑植物" if plant else "添加植物" }}</h1>
+  {% if plant %}
+  <a href="/plants/{{ plant.id }}" class="btn btn-ghost">取消</a>
+  {% else %}
+  <a href="/" class="btn btn-ghost">取消</a>
+  {% endif %}
+</div>
+
+<form
+  method="post"
+  action="{{ '/plants/' ~ plant.id ~ '/edit' if plant else '/plants/new' }}"
+  class="form-card"
+  id="plant-form"
+>
+  <div class="form-section">
+    <h2>基本信息</h2>
+
+    <!-- 名称 + 联想下拉 -->
+    <div class="form-group">
+      <label for="name">名称 <span class="required">*</span></label>
+      <input id="name" name="name" type="text" required
+             list="name-datalist" autocomplete="off"
+             value="{{ plant.name if plant else '' }}" placeholder="例：虹之玉" />
+      <datalist id="name-datalist"></datalist>
+      <small id="name-hint" class="field-hint"></small>
+    </div>
+
+    <!-- 品种 / 学名 -->
+    <div class="form-group">
+      <label for="species">品种 / 学名</label>
+      <input id="species" name="species" type="text" autocomplete="off"
+             value="{{ plant.species or '' }}"
+             placeholder="例：Sedum rubrotinctum（选择联想项可自动填入）" />
+    </div>
+
+    <div class="form-group">
+      <label for="location">摆放位置</label>
+      <input id="location" name="location" type="text"
+             value="{{ plant.location or '' }}" placeholder="例：客厅窗台" />
+    </div>
+    <div class="form-group">
+      <label for="purchase_date">入手日期</label>
+      <input id="purchase_date" name="purchase_date" type="date"
+             value="{{ plant.purchase_date.isoformat() if plant and plant.purchase_date else '' }}" />
+    </div>
+    <div class="form-group">
+      <label for="notes">备注</label>
+      <textarea id="notes" name="notes" rows="3"
+                placeholder="养护心得、来源等…">{{ plant.notes or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2>养护计划</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="water_days">浇水间隔（天）</label>
+        <input id="water_days" name="water_days" type="number" min="1" max="365"
+               value="{{ schedules.water.frequency_days if schedules and 'water' in schedules else 7 }}" />
+      </div>
+      <div class="form-group">
+        <label for="fertilize_days">施肥间隔（天）</label>
+        <input id="fertilize_days" name="fertilize_days" type="number" min="1" max="365"
+               value="{{ schedules.fertilize.frequency_days if schedules and 'fertilize' in schedules else 30 }}" />
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 养护知识推荐（动态插入） -->
+  <div id="care-tips-section" class="form-section" hidden>
+    <h2>🌿 AI 养护建议 <span id="care-tips-plant-name" style="font-weight:400;color:var(--gray-400);font-size:.9rem;"></span></h2>
+    <div id="care-tips-content" class="care-tips-grid"></div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn">{{ "保存修改" if plant else "添加植物" }}</button>
+  </div>
+</form>
+{% endblock %}
