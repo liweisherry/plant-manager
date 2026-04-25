@@ -55,6 +55,7 @@ input, select, textarea, button { font: inherit; }
   font-style: italic;
   color: var(--cream);
   letter-spacing: .01em;
+  line-height: 1;
 }
 .site-header nav {
   display: flex;
@@ -70,9 +71,7 @@ input, select, textarea, button { font: inherit; }
   transition: color .15s;
 }
 .site-header nav a:hover { color: var(--cream); }
-.nav-cta {
-  color: var(--rust-light) !important;
-}
+.nav-cta { color: var(--rust-light) !important; }
 .nav-lang {
   background: none;
   border: 1px solid rgba(244,237,224,.25);
@@ -87,6 +86,13 @@ input, select, textarea, button { font: inherit; }
   transition: color .15s, border-color .15s;
 }
 .nav-lang:hover { color: var(--cream); border-color: rgba(244,237,224,.55); }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .site-header { padding: 0 1rem; height: 48px; }
+  .site-header nav { gap: 1rem; }
+  .site-header nav a { font-size: .65rem; }
+}
 
 /* ── Container ────────────────────────────────────────────────────────────── */
 .container {

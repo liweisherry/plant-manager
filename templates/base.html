@@ -24,14 +24,16 @@
 <body>
   <header class="site-header">
     <a href="/" class="logo">The Root</a>
-    <nav>
-      <a href="/">{{ t.nav_home if t else "The Haven" }}</a>
+
+    <!-- Desktop nav -->
+    <nav class="nav-desktop">
       <a href="/settings">{{ t.nav_settings if t else "Settings" }}</a>
       <a href="/plants/new" class="nav-cta">{{ t.nav_add if t else "+ Add" }}</a>
       <form method="post" action="/lang/{{ t.lang_target if t else 'zh' }}" style="display:inline;margin:0">
         <button type="submit" class="nav-lang">{{ t.lang_toggle if t else "中文" }}</button>
       </form>
     </nav>
+
   </header>
 
   <main class="container">

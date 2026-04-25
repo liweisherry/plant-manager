@@ -1,5 +1,7 @@
 EN = {
     "nav_home": "The Haven", "nav_settings": "Settings", "nav_add": "+ Add",
+    "nav_add_plant": "Add Plant",
+    "sidebar_sub": "Your Plant Sanctuary", "sidebar_garden": "Garden",
     "lang_toggle": "中文", "lang_target": "zh",
 
     "conservatory": "The Conservatory",
@@ -59,6 +61,8 @@ EN = {
 
 ZH = {
     "nav_home": "植物园", "nav_settings": "设置", "nav_add": "+ 添加",
+    "nav_add_plant": "添加植物",
+    "sidebar_sub": "植物养护空间", "sidebar_garden": "植物",
     "lang_toggle": "English", "lang_target": "en",
 
     "conservatory": "植物温室",
