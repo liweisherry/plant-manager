@@ -66,6 +66,7 @@ class Photo(Base):
     file_size_bytes: Mapped[int]  = mapped_column(Integer, nullable=True)
     width_px: Mapped[int]         = mapped_column(Integer, nullable=True)
     height_px: Mapped[int]        = mapped_column(Integer, nullable=True)
+    cloudinary_id: Mapped[str]    = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime]  = mapped_column(DateTime, default=datetime.utcnow)
 
     plant: Mapped["Plant"] = relationship("Plant", back_populates="photos", foreign_keys=[plant_id])

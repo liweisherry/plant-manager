@@ -1,42 +1,79 @@
 {% extends "base.html" %}
-{% block title %}My Plants · The Root Directory{% endblock %}
+{% block title %}The Conservatory · The Root Directory{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>我的植物</h1>
-  <a href="/plants/new" class="btn">+ 添加植物</a>
+
+<!-- Hero -->
+<div class="hero">
+  <p class="section-label">The Conservatory</p>
+  <h1 class="hero-title">A quiet record of every<br><em class="hero-accent">soul</em> in your care.</h1>
 </div>
 
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-label">Souls in Care</span>
+    <span class="stat-value">{{ "%02d"|format(stats.total) }}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Thriving</span>
+    <span class="stat-value">{{ "%02d"|format(stats.thriving) }}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Need Attention</span>
+    <span class="stat-value">{{ "%02d"|format(stats.need_attention) }}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Avg. Vitality</span>
+    <span class="stat-value">{{ stats.avg_vitality }}</span>
+  </div>
+</div>
+
+<!-- Plant grid -->
 {% if plants %}
-<div class="plant-grid">
+<div class="specimens-header">
+  <p class="section-label">All Specimens</p>
+  <a href="/plants/new" class="btn-text">+ Welcome a new soul</a>
+</div>
+
+<div class="specimen-grid">
   {% for plant in plants %}
-  <a href="/plants/{{ plant.id }}" class="plant-card">
-    <div class="plant-card__photo">
+  {% set v = vitalities[plant.id] %}
+  <a href="/plants/{{ plant.id }}" class="specimen-card">
+    <div class="specimen-photo">
       {% if plant.cover_photo_id %}
-        {% for photo in plant.photos %}
-          {% if photo.id == plant.cover_photo_id %}
-            <img src="/uploads/plants/{{ photo.filename }}" alt="{{ plant.name }}" loading="lazy" />
-          {% endif %}
-        {% endfor %}
+        {% for photo in plant.photos %}{% if photo.id == plant.cover_photo_id %}
+          <img src="{{ photo_src(photo) }}" alt="{{ plant.name }}" loading="lazy" />
+        {% endif %}{% endfor %}
       {% elif plant.photos %}
-        <img src="/uploads/plants/{{ plant.photos[0].filename }}" alt="{{ plant.name }}" loading="lazy" />
+        <img src="{{ photo_src(plant.photos[0]) }}" alt="{{ plant.name }}" loading="lazy" />
       {% else %}
-        <div class="plant-card__placeholder">🌱</div>
+        <div class="specimen-placeholder">⌘</div>
       {% endif %}
+      <span class="status-badge status-{{ v.status|lower }}">{{ v.status }}</span>
     </div>
-    <div class="plant-card__body">
-      <h3>{{ plant.name }}</h3>
-      {% if plant.species %}<p class="species">{{ plant.species }}</p>{% endif %}
-      {% if plant.location %}<p class="location">📍 {{ plant.location }}</p>{% endif %}
+    <div class="specimen-body">
+      <h3 class="specimen-name">{{ plant.name }}</h3>
+      {% if plant.species %}<p class="specimen-species">{{ plant.species }}</p>{% endif %}
+      <div class="specimen-meta">
+        {% if v.days_since_water is not none %}
+        <span>Last watered · {{ v.days_since_water }}d ago</span>
+        {% else %}
+        <span>Not yet watered</span>
+        {% endif %}
+        <span>Vitality {{ v.score }}</span>
+      </div>
     </div>
   </a>
   {% endfor %}
 </div>
+
 {% else %}
 <div class="empty-state">
-  <div class="empty-state__icon">🌱</div>
-  <p>还没有植物，快去添加第一株吧！</p>
-  <a href="/plants/new" class="btn">添加植物</a>
+  <div class="empty-state__icon">⌘</div>
+  <p>Your conservatory is empty.<br>Welcome your first soul.</p>
+  <a href="/plants/new" class="btn" style="margin-top:1.25rem;">Add a Plant</a>
 </div>
 {% endif %}
+
 {% endblock %}

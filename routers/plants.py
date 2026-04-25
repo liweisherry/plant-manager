@@ -11,10 +11,13 @@ from config.settings import BASE_DIR
 from db.database import get_db
 from db.models import CareSchedule
 from services import plant_service
-from services.plant_service import get_care_logs, last_care
+from services.plant_service import get_care_logs, last_care, plant_vitality, plants_stats
 
 router = APIRouter()
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+templates.env.globals["photo_src"] = (
+    lambda p: p.filename if p.filename.startswith("http") else f"/uploads/plants/{p.filename}"
+)
 
 
 # ── Pages ─────────────────────────────────────────────────────────────────────
@@ -26,9 +29,12 @@ def settings_page(request: Request):
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request, db: Session = Depends(get_db)):
     plants = plant_service.list_plants(db)
+    vitalities = {p.id: plant_vitality(db, p.id) for p in plants}
+    stats = plants_stats(db)
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "plants": plants},
+        {"request": request, "plants": plants,
+         "vitalities": vitalities, "stats": stats},
     )
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from config.settings import DATABASE_URL
 
@@ -24,3 +24,9 @@ def get_db():
 def init_db():
     from db import models  # noqa: F401 — ensure models are registered
     Base.metadata.create_all(bind=engine)
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE photos ADD COLUMN cloudinary_id VARCHAR(255)"))
+            conn.commit()
+        except Exception:
+            pass  # column already exists

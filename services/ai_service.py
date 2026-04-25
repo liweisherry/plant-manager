@@ -31,6 +31,10 @@ def _resolve_key(user_key: Optional[str]) -> str:
 
 
 def _load_image(filename: str) -> Image.Image:
+    if filename.startswith("http"):
+        import urllib.request
+        with urllib.request.urlopen(filename) as resp:
+            return Image.open(io.BytesIO(resp.read()))
     path = UPLOAD_DIR / "plants" / filename
     return Image.open(io.BytesIO(path.read_bytes()))
 

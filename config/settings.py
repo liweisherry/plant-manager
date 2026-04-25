@@ -15,6 +15,9 @@ LOG_DIR.mkdir(exist_ok=True)
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")
 PORT         = int(os.getenv("PORT", "8080"))
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+# Cloudinary (optional — if set, photos are stored in the cloud)
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "")  # cloudinary://api_key:api_secret@cloud_name
 API_TOKEN      = os.getenv("API_TOKEN", "dev-token")
 
 # Gemini models

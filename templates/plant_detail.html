@@ -38,7 +38,7 @@
     <div class="photo-grid">
       {% for photo in photos %}
       <div class="photo-item {% if photo.id == plant.cover_photo_id %}photo-item--cover{% endif %}">
-        <img src="/uploads/plants/{{ photo.filename }}" alt="{{ photo.photo_type }}" loading="lazy" />
+        <img src="{{ photo_src(photo) }}" alt="{{ photo.photo_type }}" loading="lazy" />
         <div class="photo-item__overlay">
           {% if photo.id != plant.cover_photo_id %}
           <form method="post" action="/plants/{{ plant.id }}/photos/{{ photo.id }}/set-cover">
